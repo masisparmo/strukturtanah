@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktur Tanah dalam Ilmu Geoteknik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 70px; /* Jarak untuk sticky nav */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 400px;
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            line-height: 1;
+            color: #ff6361;
+        }
+        .classification-box {
+            border: 2px solid;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .classification-line {
+            height: 2px;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        .classification-line-v {
+            width: 2px;
+            height: 2rem;
+            margin: 0 auto;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff6361;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .problem-soil-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .problem-soil-title {
+            color: #003f5c;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #ff6361;
+            padding-bottom: 0.5rem;
+        }
+        /* Kuis Styles */
+        .quiz-option {
+            transition: all 0.2s ease-in-out;
+            border: 2px solid transparent;
+        }
+        .quiz-option:hover {
+            transform: translateY(-2px);
+            border-color: #58508d;
+        }
+        .quiz-option.correct {
+            background-color: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        .quiz-option.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+        .quiz-option:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        /* Tambahan style untuk Chat Modal */
+        .chat-message.user {
+            text-align: right;
+        }
+        .chat-message.user p {
+            background-color: #58508d;
+            color: white;
+            display: inline-block;
+            text-align: left;
+        }
+         .chat-message.bot p {
+            background-color: #eef2f7;
+            color: #003f5c;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="bg-[#003f5c] text-white p-8 text-center shadow-lg">
+        <h1 class="text-4xl md:text-5xl font-bold">Struktur Tanah Dalam Ilmu Geoteknik</h1>
+        <p class="mt-4 text-lg md:text-xl max-w-3xl mx-auto">Ringkasan Bab Dasar-dasar Struktur Tanah dalam Rekayasa Geoteknik</p>
+    </header>
+
+    <nav id="navbar" class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-40">
+      <div class="container mx-auto px-4">
+        <ul class="flex items-center justify-center space-x-1 md:space-x-2 py-3 overflow-x-auto whitespace-nowrap text-xs md:text-base">
+          <li><a href="#komposisi" class="text-gray-600 hover:text-[#003f5c] font-semibold transition duration-300 p-2">Komposisi</a></li>
+          <li><a href="#properti-dasar" class="text-gray-600 hover:text-[#003f5c] font-semibold transition duration-300 p-2">Properti</a></li>
+          <li><a href="#gradasi" class="text-gray-600 hover:text-[#003f5c] font-semibold transition duration-300 p-2">Gradasi</a></li>
+          <li><a href="#atterberg" class="text-gray-600 hover:text-[#003f5c] font-semibold transition duration-300 p-2">Atterberg</a></li>
+          <li><a href="#klasifikasi" class="text-gray-600 hover:text-[#003f5c] font-semibold transition duration-300 p-2">Klasifikasi</a></li>
+          <li><a href="#plasticity-uscs" class="text-gray-600 hover:text-[#003f5c] font-semibold transition duration-300 p-2">Grafik Plastisitas</a></li>
+          <li><a href="#problematic-soils" class="text-gray-600 hover:text-[#003f5c] font-semibold transition duration-300 p-2">Tanah Bermasalah</a></li>
+          <li><a href="#gemini-interactive" class="text-gray-600 hover:text-[#003f5c] font-semibold transition duration-300 p-2">Analisis AI</a></li>
+          <li><a href="#kuis-interaktif" class="text-gray-600 hover:text-[#003f5c] font-semibold transition duration-300 p-2">Kuis AI</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <section id="api-key-section" class="mb-12">
+            <div class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-2">Selamat Datang!</h2>
+                <p class="text-center text-gray-600 mb-6">Untuk menggunakan fitur AI interaktif, silakan pilih mode akses Anda.</p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Opsi 1: Mode Demo -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center flex flex-col">
+                        <h3 class="text-2xl font-bold text-[#58508d] mb-3">1. Mode Demo</h3>
+                        <p class="text-gray-600 flex-grow">
+                            Coba aplikasi menggunakan lingkungan bersama. Pilihan ini cocok untuk eksplorasi cepat tanpa perlu registrasi atau API key. Performa mungkin terbatas.
+                        </p>
+                        <button id="demoModeBtn" class="mt-6 w-full bg-[#58508d] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#4a437a] transition duration-300">
+                            Lanjutkan (Tanpa API Key)
+                        </button>
+                    </div>
+
+                    <!-- Opsi 2: API Key Pribadi -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center flex flex-col">
+                        <h3 class="text-2xl font-bold text-[#ff6361] mb-3">2. Mode API Pribadi</h3>
+                        <p class="text-gray-600 flex-grow">
+                            Gunakan Google AI API Key gratis Anda sendiri untuk mendapatkan performa penuh dan tanpa batas.
+                        </p>
+                        <button id="personalApiModeBtn" class="mt-6 w-full bg-[#ff6361] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#e65a58] transition duration-300">
+                            Masukkan API Key Pribadi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kontainer Input API Key (disembunyikan secara default) -->
+                <div id="personal-api-key-container" class="hidden mt-8 transition-all duration-500">
+                    <hr class="my-6">
+                    <h3 class="text-2xl font-bold text-center text-[#003f5c] mb-4">Konfigurasi API Key Pribadi</h3>
+                    <input type="password" id="apiKeyInput" class="w-full p-3 border border-gray-300 rounded-lg mb-4" placeholder="Tempelkan API Key Anda di sini...">
+                    <div id="apiKeyStatus" class="text-center mb-4 font-semibold h-6"></div>
+                    
+                    <h4 class="font-bold text-lg text-gray-700 mb-2">Cara Mendapatkan Google AI API Key Gratis:</h4>
+                    <ol class="list-decimal list-inside text-gray-600 space-y-1">
+                        <li>Kunjungi situs <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 hover:underline font-semibold">Google AI Studio</a>.</li>
+                        <li>Masuk menggunakan Akun Google Anda.</li>
+                        <li>Klik tombol <strong class="text-gray-800">"Create API key"</strong> untuk membuat kunci baru.</li>
+                        <li>Salin kunci yang muncul dan tempelkan di kolom di atas.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section id="komposisi" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-6">1. Komposisi Tiga Fase Tanah</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8">Secara fundamental, tanah bukanlah material padat tunggal. Ia merupakan sistem kompleks yang terdiri dari tiga komponen atau fase: butiran padat, air, dan udara.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-6xl mb-4">🪨</div>
+                    <h3 class="text-2xl font-bold text-[#58508d]">Butiran Padat (Solids)</h3>
+                    <p class="mt-2">Kerangka mineral tanah yang memberikan kekuatan dan menahan beban.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-6xl mb-4">💧</div>
+                    <h3 class="text-2xl font-bold text-[#ff6361]">Air (Water)</h3>
+                    <p class="mt-2">Mengisi sebagian atau seluruh rongga pori dan sangat mempengaruhi perilaku tanah, terutama lempung.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-6xl mb-4">💨</div>
+                    <h3 class="text-2xl font-bold text-[#ffa600]">Udara (Air)</h3>
+                    <p class="mt-2">Mengisi rongga pori yang tidak terisi air. Tanah dengan banyak udara lebih mudah dimampatkan.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="properti-dasar" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-8">2. Hubungan Berat & Volume</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8">Untuk mengukur sifat tanah, kita menggunakan serangkaian parameter yang mendefinisikan hubungan antara berat dan volume dari ketiga fasenya. Ini adalah "bahasa" dari mekanika tanah.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-[#58508d]">Kadar Air (w)</h3>
+                    <p class="text-4xl font-bold my-2 text-[#ff6361]">w = (W<sub>w</sub> / W<sub>s</sub>)</p>
+                    <p class="mb-2">Persentase berat air terhadap berat butiran kering. Kunci utama perilaku tanah lempung.</p>
+                    <button class="explain-formula-btn text-sm text-white bg-[#58508d] py-1 px-3 rounded-full hover:bg-[#4a437a]" data-formula="w = (Ww / Ws)">Jelaskan Rumus Ini ✨</button>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-[#58508d]">Angka Pori (e)</h3>
+                    <p class="text-4xl font-bold my-2 text-[#ff6361]">e = V<sub>v</sub> / V<sub>s</sub></p>
+                    <p class="mb-2">Rasio volume rongga terhadap volume butiran padat. Menunjukkan tingkat kepadatan tanah.</p>
+                     <button class="explain-formula-btn text-sm text-white bg-[#58508d] py-1 px-3 rounded-full hover:bg-[#4a437a]" data-formula="e = Vv / Vs">Jelaskan Rumus Ini ✨</button>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-[#58508d]">Derajat Kejenuhan (S)</h3>
+                    <p class="text-4xl font-bold my-2 text-[#ff6361]">S = (V<sub>w</sub> / V<sub>v</sub>)</p>
+                    <p class="mb-2">Persentase volume rongga yang terisi air. S = 100% berarti tanah jenuh sempurna.</p>
+                     <button class="explain-formula-btn text-sm text-white bg-[#58508d] py-1 px-3 rounded-full hover:bg-[#4a437a]" data-formula="S = (Vw / Vv)">Jelaskan Rumus Ini ✨</button>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-[#58508d]">Berat Volume Kering (γ<sub>d</sub>)</h3>
+                    <p class="text-4xl font-bold my-2 text-[#ff6361]">γ<sub>d</sub> = W<sub>s</sub> / V</p>
+                    <p class="mb-2">Ukuran kepadatan massa tanah. Nilai ini sering menjadi target dalam pekerjaan pemadatan.</p>
+                     <button class="explain-formula-btn text-sm text-white bg-[#58508d] py-1 px-3 rounded-full hover:bg-[#4a437a]" data-formula="γd = Ws / V">Jelaskan Rumus Ini ✨</button>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-md col-span-1 md:col-span-2 lg:col-span-1">
+                    <h3 class="text-xl font-bold text-[#58508d]">Rumus Kunci</h3>
+                    <p class="text-4xl font-bold my-2 text-[#ff6361]">S * e = w * G<sub>s</sub></p>
+                    <p class="mb-2">Hubungan fundamental yang menghubungkan empat properti utama tanah.</p>
+                     <button class="explain-formula-btn text-sm text-white bg-[#58508d] py-1 px-3 rounded-full hover:bg-[#4a437a]" data-formula="S * e = w * Gs">Jelaskan Rumus Ini ✨</button>
+                </div>
+            </div>
+             <div class="bg-white p-6 rounded-lg shadow-md mt-8">
+                <h3 class="text-2xl font-bold text-center text-[#58508d] mb-4">Perbandingan Berat Volume Kering Tipikal</h3>
+                <p class="text-center max-w-2xl mx-auto mb-6">Berat volume kering (γd) sangat bervariasi tergantung jenis dan kepadatan tanah. Nilai yang lebih tinggi menunjukkan tanah yang lebih padat dan lebih kuat.</p>
+                <div class="chart-container">
+                    <canvas id="unitWeightChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="gradasi" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-8">3. Analisis Ukuran Butiran & Gradasi</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8">Distribusi ukuran butiran, atau gradasi, sangat memengaruhi sifat teknis tanah seperti permeabilitas, kekuatan, dan kemudahan pemadatan.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold text-center text-[#58508d] mb-4">Kriteria Gradasi Tanah</h3>
+                    <p class="text-center mb-6">Tanah "bergradasi baik" memiliki distribusi ukuran yang merata, membuatnya lebih padat dan stabil. Ini diukur dengan Koefisien Keseragaman (Cu) dan Gradasi (Cc).</p>
+                    <div class="chart-container h-80 md:h-96">
+                        <canvas id="gradationChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-center text-[#58508d] mb-4">Komposisi Tanah Tipikal</h3>
+                     <p class="text-center mb-6">Kebanyakan tanah di alam adalah campuran dari berbagai ukuran partikel.</p>
+                    <div class="chart-container h-80 md:h-96">
+                        <canvas id="compositionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="atterberg" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-8">4. Konsistensi & Batas Atterberg</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8">Untuk tanah berbutir halus seperti lempung dan lanau, kadar air menentukan segalanya. Batas Atterberg mendefinisikan transisi konsistensi tanah dari padat getas hingga cair.</p>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="text-center">
+                        <p class="font-bold text-lg text-[#003f5c]">Padat</p>
+                        <p class="text-sm">(Getas)</p>
+                    </div>
+                    <div class="flex-grow text-center">
+                        <p class="text-sm font-semibold text-[#58508d]">Batas Susut (SL)</p>
+                        <div class="flex items-center">
+                           <div class="flow-arrow transform -translate-y-1">→</div>
+                           <div class="border-t-4 border-dashed border-[#58508d] w-full"></div>
+                        </div>
+                        <p class="text-sm">Penambahan Air →</p>
+                    </div>
+                     <div class="text-center">
+                        <p class="font-bold text-lg text-[#58508d]">Semi-Padat</p>
+                    </div>
+                     <div class="flex-grow text-center">
+                        <p class="text-sm font-semibold text-[#bc5090]">Batas Plastis (PL)</p>
+                         <div class="flex items-center">
+                           <div class="flow-arrow transform -translate-y-1">→</div>
+                           <div class="border-t-4 border-dashed border-[#bc5090] w-full"></div>
+                        </div>
+                         <p class="text-sm">Penambahan Air →</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="font-bold text-lg text-[#bc5090]">Plastis</p>
+                         <p class="text-sm">(Bisa dibentuk)</p>
+                    </div>
+                    <div class="flex-grow text-center">
+                        <p class="text-sm font-semibold text-[#ff6361]">Batas Cair (LL)</p>
+                         <div class="flex items-center">
+                           <div class="flow-arrow transform -translate-y-1">→</div>
+                           <div class="border-t-4 border-dashed border-[#ff6361] w-full"></div>
+                        </div>
+                        <p class="text-sm">Penambahan Air →</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="font-bold text-lg text-[#ff6361]">Cair</p>
+                    </div>
+                </div>
+                <div class="mt-8 text-center bg-gray-50 p-4 rounded-md">
+                    <h4 class="font-bold text-xl text-[#003f5c]">Indeks Plastisitas (PI) = LL - PL</h4>
+                    <p class="mt-2">PI adalah parameter kunci. Semakin besar nilainya, semakin tinggi kandungan lempung dan semakin signifikan pengaruh air terhadap perilakunya.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="klasifikasi" class="mb-12">
+             <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-8">5. Sistem Klasifikasi Tanah (USCS)</h2>
+             <p class="text-center max-w-3xl mx-auto mb-8">Sistem Klasifikasi Tanah Terpadu (USCS) adalah metode standar untuk mengelompokkan tanah berdasarkan analisis ukuran butiran dan plastisitasnya. Ini membantu insinyur memprediksi perilaku tanah secara cepat.</p>
+             <div class="bg-white p-6 rounded-lg shadow-md">
+                 <div class="classification-box border-[#003f5c]">
+                     <p>Mulai: Sampel Tanah</p>
+                 </div>
+                 <div class="classification-line-v bg-[#003f5c]"></div>
+                 <div class="classification-box border-[#003f5c] font-bold">
+                     <p>Berapa persen lolos saringan No. 200 (0.075 mm)?</p>
+                 </div>
+                 <div class="classification-line bg-[#003f5c]"></div>
+                 <div class="grid grid-cols-2 gap-4">
+                     <div>
+                        <div class="classification-box border-[#58508d]">
+                             <p class="font-semibold">&lt; 50% lolos</p>
+                             <p class="text-sm">(Tanah Berbutir Kasar)</p>
+                         </div>
+                         <div class="classification-line-v bg-[#58508d]"></div>
+                         <div class="classification-box border-[#58508d]">
+                             <p>Apakah mayoritas fraksi kasarnya kerikil atau pasir?</p>
+                         </div>
+                         <div class="classification-line bg-[#58508d]"></div>
+                         <div class="grid grid-cols-2 gap-2">
+                             <div class="classification-box border-gray-400">
+                                <p class="font-semibold">Kerikil (G)</p>
+                                <p class="text-xs">GW, GP, GM, GC</p>
+                             </div>
+                              <div class="classification-box border-gray-400">
+                                <p class="font-semibold">Pasir (S)</p>
+                                <p class="text-xs">SW, SP, SM, SC</p>
+                             </div>
+                         </div>
+
+                     </div>
+                      <div>
+                         <div class="classification-box border-[#ff6361]">
+                             <p class="font-semibold">≥ 50% lolos</p>
+                             <p class="text-sm">(Tanah Berbutir Halus)</p>
+                         </div>
+                         <div class="classification-line-v bg-[#ff6361]"></div>
+                         <div class="classification-box border-[#ff6361]">
+                             <p>Plot nilai Batas Cair (LL) dan Indeks Plastisitas (PI) pada Diagram Plastisitas.</p>
+                         </div>
+                         <div class="classification-line bg-[#ff6361]"></div>
+                         <div class="grid grid-cols-2 gap-2">
+                             <div class="classification-box border-gray-400">
+                                <p class="font-semibold">Lanau & Lempung Plastisitas Rendah</p>
+                                <p class="text-xs">ML, CL, OL</p>
+                             </div>
+                              <div class="classification-box border-gray-400">
+                                <p class="font-semibold">Lanau & Lempung Plastisitas Tinggi</p>
+                                <p class="text-xs">MH, CH, OH</p>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+        </section>
+
+        <!-- BAGIAN BARU: GRAFIK PLASTISITAS -->
+        <section id="plasticity-uscs" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-8">6. Detail Klasifikasi: Grafik Plastisitas</h2>
+            <p class="text-center max-w-3xl mx-auto mb-8">
+                Grafik Plastisitas, yang dikembangkan oleh Casagrande, adalah alat visual utama dalam sistem USCS untuk mengklasifikasikan tanah berbutir halus. Dengan memplot Batas Cair (LL) pada sumbu-x dan Indeks Plastisitas (PI) pada sumbu-y, kita dapat menentukan apakah tanah tersebut lempung (Clay, C) atau lanau (Silt, M), serta tingkat plastisitasnya (Rendah/Low, L, atau Tinggi/High, H).
+            </p>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="chart-container h-96 md:h-[500px]">
+                     <canvas id="plasticityChart"></canvas>
+                </div>
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-bold text-[#003f5c]">Garis A (A-Line)</h4>
+                        <p>Formula: <strong>PI = 0.73(LL - 20)</strong>. Garis ini adalah batas empiris yang memisahkan lempung (di atas garis) dari lanau (di bawah garis).</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-bold text-[#003f5c]">Garis U (U-Line)</h4>
+                        <p>Formula: <strong>PI = 0.9(LL - 8)</strong>. Ini adalah batas atas teoritis untuk semua jenis tanah di alam. Data yang jatuh di atas garis ini kemungkinan besar salah.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="problematic-soils" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-8">7. Mengenal Tanah-Tanah Bermasalah</h2>
+            <p class="text-center max-w-3xl mx-auto mb-8">Beberapa jenis tanah memiliki karakteristik yang dapat menimbulkan tantangan signifikan dalam desain dan konstruksi. Mengenali ciri-cirinya sejak dini adalah kunci untuk rekayasa geoteknik yang aman dan efisien.</p>
+
+            <div class="problem-soil-card">
+                <h3 class="problem-soil-title">Lempung Lunak (Soft Clay)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-lg text-[#58508d] mb-2">Ciri-ciri & Identifikasi:</h4>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li><strong>Fisik:</strong> Sangat lembek saat basah, mudah diremas dengan tangan, terasa licin, dan lengket. Warna biasanya abu-abu gelap hingga kehitaman.</li>
+                            <li><strong>Data Uji:</strong>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Kadar air alami (w) seringkali mendekati atau bahkan melebihi Batas Cair (LL).</li>
+                                    <li>Indeks Cair (LI) > 1.</li>
+                                    <li>Kuat geser undrained (c<sub>u</sub>) sangat rendah, tipikal < 25 kN/m².</li>
+                                    <li>Nilai SPT (N) sangat rendah, umumnya < 4.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                         <h4 class="font-bold text-lg text-[#58508d] mt-4 mb-2">Implikasi Rekayasa:</h4>
+                        <p>Daya dukung sangat rendah dan potensi penurunan (konsolidasi) sangat besar dan berlangsung lama. Sangat tidak cocok untuk mendukung pondasi dangkal secara langsung.</p>
+                    </div>
+                    <div class="chart-container h-64">
+                         <canvas id="softClayChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-soil-card">
+                <h3 class="problem-soil-title">Tanah Organik dan Gambut (Organic Soil & Peat)</h3>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-lg text-[#58508d] mb-2">Ciri-ciri & Identifikasi:</h4>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li><strong>Fisik:</strong> Warna gelap (coklat tua hingga hitam), berbau khas pembusukan, terasa berserat (gambut), dan sangat ringan saat kering.</li>
+                            <li><strong>Data Uji:</strong>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Kadar air alami (w) sangat tinggi, bisa mencapai > 500% untuk gambut.</li>
+                                    <li>Batas Cair (LL) tinggi, dan turun drastis setelah pengeringan di oven.</li>
+                                    <li>Berat jenis (G<sub>s</sub>) sangat rendah, seringkali < 2.5.</li>
+                                     <li>Kandungan organik tinggi (> 10%).</li>
+                                </ul>
+                            </li>
+                        </ul>
+                         <h4 class="font-bold text-lg text-[#58508d] mt-4 mb-2">Implikasi Rekayasa:</h4>
+                        <p>Sangat kompresibel (penurunan besar), daya dukung sangat rendah, dan mengalami dekomposisi seiring waktu. Umumnya dihindari sebagai tanah pendukung dan material timbunan.</p>
+                    </div>
+                    <div class="chart-container h-64">
+                         <canvas id="organicSoilChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-soil-card">
+                <h3 class="problem-soil-title">Tanah Ekspansif (Expansive Soil)</h3>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-lg text-[#58508d] mb-2">Ciri-ciri & Identifikasi:</h4>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li><strong>Fisik:</strong> Keras dan retak-retak saat kering, menjadi sangat lengket dan plastis saat basah. Mengandung mineral lempung Montmorillonite.</li>
+                            <li><strong>Data Uji:</strong>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Indeks Plastisitas (PI) tinggi, umumnya > 25-30.</li>
+                                    <li>Batas Susut (SL) rendah.</li>
+                                    <li>Aktivitas (A = PI / % fraksi lempung) tinggi, > 1.25.</li>
+                                    <li>Potensi pengembangan (swell potential) tinggi saat diuji di laboratorium.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                         <h4 class="font-bold text-lg text-[#58508d] mt-4 mb-2">Implikasi Rekayasa:</h4>
+                        <p>Mengalami perubahan volume yang signifikan akibat perubahan kadar air (mengembang saat basah, menyusut saat kering). Dapat menyebabkan kerusakan parah pada struktur ringan seperti perkerasan jalan dan pondasi rumah.</p>
+                    </div>
+                    <div class="chart-container h-64">
+                         <canvas id="expansiveSoilChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-soil-card">
+                <h3 class="problem-soil-title">Tanah Mudah Runtuh (Collapsible Soil)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-lg text-[#58508d] mb-2">Ciri-ciri & Identifikasi:</h4>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li><strong>Fisik:</strong> Tampak stabil dan kuat dalam kondisi kering, seringkali memiliki berat volume kering (γ<sub>d</sub>) yang rendah. Contohnya adalah tanah loess.</li>
+                            <li><strong>Data Uji:</strong>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Angka pori alami (e) tinggi.</li>
+                                     <li>Struktur tanah runtuh dan mengalami penurunan drastis saat dibasahi (diuji dengan uji konsolidasi khusus).</li>
+                                     <li>Derajat kejenuhan alami (S) rendah.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                         <h4 class="font-bold text-lg text-[#58508d] mt-4 mb-2">Implikasi Rekayasa:</h4>
+                        <p>Dapat menahan beban yang cukup besar dalam kondisi kering, tetapi kehilangan kekuatannya secara tiba-tiba dan mengalami penurunan yang besar ketika jenuh air. Sangat berbahaya untuk pondasi jika ada potensi kenaikan muka air tanah atau kebocoran pipa.</p>
+                    </div>
+                    <div class="chart-container h-64">
+                         <canvas id="collapsibleSoilChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="gemini-interactive" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-8">8. Analisis Tanah Interaktif dengan Gemini AI ✨</h2>
+            <p class="text-center max-w-3xl mx-auto mb-8">Gunakan alat ini untuk mendapatkan analisis cepat dari Gemini tentang perilaku tanah dan kelayakannya untuk berbagai proyek rekayasa sipil. Sesuaikan parameter di bawah ini dan lihat apa kata ahlinya!</p>
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-md mt-8">
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div>
+                            <label for="finesSlider" class="block font-bold text-lg text-[#58508d]">Lolos Saringan No. 200 (%): <span id="finesValue" class="font-bold text-[#ff6361]">60</span>%</label>
+                            <input id="finesSlider" type="range" min="0" max="100" value="60" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <div>
+                            <label for="llSlider" class="block font-bold text-lg text-[#58508d]">Batas Cair (LL): <span id="llValue" class="font-bold text-[#ff6361]">55</span></label>
+                            <input id="llSlider" type="range" min="0" max="100" value="55" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                         <div>
+                            <label for="piSlider" class="block font-bold text-lg text-[#58508d]">Indeks Plastisitas (PI): <span id="piValue" class="font-bold text-[#ff6361]">30</span></label>
+                            <input id="piSlider" type="range" min="0" max="60" value="30" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <div>
+                            <label for="projectType" class="block font-bold text-lg text-[#58508d]">Pilih Tipe Proyek:</label>
+                            <select id="projectType" class="w-full p-2 mt-2 border border-gray-300 rounded-lg">
+                                <option value="Pondasi Dangkal Bangunan Ringan">Pondasi Dangkal Bangunan Ringan</option>
+                                <option value="Pondasi Tiang Pancang (Tanah Pendukung)">Pondasi Tiang Pancang (Tanah Pendukung)</option>
+                                <option value="Timbunan Jalan Raya (Subgrade)">Timbunan Jalan Raya (Subgrade)</option>
+                                <option value="Lapis Pondasi Bawah (Subbase)">Lapis Pondasi Bawah (Subbase)</option>
+                                <option value="Dinding Penahan Tanah (Material Urugan)">Dinding Penahan Tanah (Material Urugan)</option>
+                                <option value="Inti Bendungan Tanah (Dam Core)">Inti Bendungan Tanah (Dam Core)</option>
+                                <option value="Material Drainase / Filter">Material Drainase / Filter</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                             <button id="explainSoilBtn" class="w-full bg-[#58508d] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#4a437a] transition duration-300">Jelaskan Perilaku Tanah Ini</button>
+                            <button id="analyzeProjectBtn" class="w-full bg-[#ff6361] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#e65a58] transition duration-300">✨ Analisis Kelayakan Proyek</button>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-3">
+                        <h4 class="text-xl font-bold text-center text-[#58508d] mb-4">Grafik Plastisitas Interaktif</h4>
+                        <div class="chart-container h-96">
+                            <canvas id="interactivePlasticityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="gemini-output-container" class="bg-gray-50 p-6 rounded-lg border border-gray-200 flex flex-col items-center justify-center min-h-[150px] mt-8">
+                    <div id="loading-indicator" class="hidden flex-col items-center justify-center text-center">
+                        <div class="loader"></div>
+                        <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang menganalisis...</p>
+                    </div>
+                    <div id="gemini-output" class="text-lg">
+                        <h4 class="font-bold text-xl text-center text-[#003f5c] mb-4">Hasil Analisis Anda</h4>
+                        <p>Hasil analisis dari Gemini akan muncul di sini. Silakan sesuaikan parameter di atas dan klik tombol untuk memulai.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gemini-case-study" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-8">9. Generator Studi Kasus Geoteknik ✨</h2>
+            <p class="text-center max-w-3xl mx-auto mb-8">Pilih skenario proyek dan kondisi tanah untuk menghasilkan studi kasus singkat yang dibuat oleh Gemini. Ini adalah cara terbaik untuk memahami penerapan teori dalam praktik nyata.</p>
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-md mt-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                    <div class="md:col-span-1">
+                        <label for="caseProjectType" class="block font-bold text-lg text-[#58508d]">Pilih Tipe Proyek:</label>
+                        <select id="caseProjectType" class="w-full p-2 mt-2 border border-gray-300 rounded-lg">
+                            <option value="Gedung Bertingkat Tinggi">Gedung Bertingkat Tinggi</option>
+                            <option value="Jembatan bentang panjang">Jembatan bentang panjang</option>
+                            <option value="Terowongan di bawah kota">Terowongan di bawah kota</option>
+                            <option value="Tanggul laut (reklamasi)">Tanggul laut (reklamasi)</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-1">
+                        <label for="caseSoilType" class="block font-bold text-lg text-[#58508d]">Pilih Kondisi Tanah:</label>
+                        <select id="caseSoilType" class="w-full p-2 mt-2 border border-gray-300 rounded-lg">
+                            <option value="Lempung lunak terkonsolidasi normal (Normally Consolidated Soft Clay)">Lempung Lunak (NC)</option>
+                            <option value="Pasir lepas jenuh air (Loose Saturated Sand)">Pasir Lepas Jenuh</option>
+                            <option value="Lempung kaku retak-retak (Stiff Fissured Clay)">Lempung Kaku (OC)</option>
+                            <option value="Tanah urugan heterogen (Heterogeneous Fill)">Tanah Urugan</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-1">
+                        <button id="generateCaseStudyBtn" class="w-full bg-[#003f5c] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#003147] transition duration-300">Buatkan Studi Kasus</button>
+                    </div>
+                </div>
+                <div id="case-study-output-container" class="bg-gray-50 p-6 mt-6 rounded-lg border border-gray-200 flex flex-col items-center justify-center min-h-[250px]">
+                     <div id="case-loading-indicator" class="hidden flex-col items-center justify-center text-center">
+                        <div class="loader"></div>
+                        <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang menyusun studi kasus...</p>
+                    </div>
+                    <div id="case-study-output" class="text-lg">
+                        <p>Studi kasus Anda akan muncul di sini.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gemini-test-interpreter" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-8">10. Asisten Interpretasi Uji Geoteknik ✨</h2>
+            <p class="text-center max-w-3xl mx-auto mb-8">Masukkan hasil uji laboratorium atau lapangan, dan biarkan Gemini menjelaskan apa artinya dalam konteks rekayasa praktis.</p>
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-md mt-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                    <div class="md:col-span-1">
+                        <label for="testType" class="block font-bold text-lg text-[#58508d]">Pilih Jenis Uji:</label>
+                        <select id="testType" class="w-full p-2 mt-2 border border-gray-300 rounded-lg">
+                            <option value="Standard Penetration Test (SPT)">Standard Penetration Test (SPT)</option>
+                            <option value="Uji Konsolidasi">Uji Konsolidasi</option>
+                            <option value="Uji Triaksial CU">Uji Triaksial CU</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-1">
+                        <label for="testValue" class="block font-bold text-lg text-[#58508d]">Masukkan Hasil Uji:</label>
+                        <input type="text" id="testValue" class="w-full p-2 mt-2 border border-gray-300 rounded-lg" placeholder="Contoh: N = 15 atau Cc = 0.25">
+                    </div>
+                    <div class="md:col-span-1">
+                        <button id="interpretTestBtn" class="w-full bg-[#ff6361] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#e65a58] transition duration-300">Interpretasikan Hasil Uji</button>
+                    </div>
+                </div>
+                <div id="test-interpreter-output-container" class="bg-gray-50 p-6 mt-6 rounded-lg border border-gray-200 flex flex-col items-center justify-center min-h-[200px]">
+                     <div id="test-loading-indicator" class="hidden flex-col items-center justify-center text-center">
+                        <div class="loader"></div>
+                        <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang menginterpretasi hasil...</p>
+                    </div>
+                    <div id="test-interpreter-output" class="text-lg">
+                        <p>Interpretasi hasil uji Anda akan muncul di sini.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gemini-compaction-curve" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-8">11. Estimasi Kurva Pemadatan dengan AI ✨</h2>
+            <p class="text-center max-w-3xl mx-auto mb-8">Pilih jenis tanah dan Gemini akan menghasilkan kurva pemadatan Standard Proctor yang tipikal, lengkap dengan analisisnya. Visualisasikan hubungan antara kadar air dan kepadatan untuk berbagai material timbunan.</p>
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-md mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-6">
+                    <div>
+                        <label for="compactionSoilType" class="block font-bold text-lg text-[#58508d]">Pilih Jenis Tanah Timbunan:</label>
+                        <select id="compactionSoilType" class="w-full p-2 mt-2 border border-gray-300 rounded-lg">
+                            <option value="Lempung plastisitas tinggi (CH)">Lempung Plastisitas Tinggi (CH)</option>
+                            <option value="Lempung berlanau (CL-ML)">Lempung Berlanau (CL-ML)</option>
+                            <option value="Lanau berpasir (SM)">Lanau Berpasir (SM)</option>
+                            <option value="Pasir bergradasi baik (SW)">Pasir Bergradasi Baik (SW)</option>
+                            <option value="Pasir gradasi buruk (SP)">Pasir Gradasi Buruk (SP)</option>
+                        </select>
+                    </div>
+                    <button id="generateCompactionCurveBtn" class="w-full bg-[#003f5c] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#003147] transition duration-300">Buat Kurva Pemadatan</button>
+                    <div id="compaction-explanation-container" class="bg-gray-50 p-4 rounded-lg border border-gray-200 min-h-[150px]">
+                        <div id="compaction-loading-indicator-text" class="hidden flex-col items-center justify-center text-center">
+                             <div class="loader"></div>
+                             <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang menghitung...</p>
+                        </div>
+                        <div id="compaction-explanation">
+                            <p>Penjelasan mengenai karakteristik pemadatan akan muncul di sini.</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="compaction-chart-container" class="chart-container">
+                    <canvas id="compactionCurveChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="kuis-interaktif" class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-8">12. Uji Pemahaman Anda dengan Kuis AI ✨</h2>
+            <p class="text-center max-w-3xl mx-auto mb-8">Pilih jumlah soal yang Anda inginkan dan biarkan Gemini membuat kuis dinamis untuk menguji pengetahuan Anda tentang dasar-dasar mekanika tanah.</p>
+            
+            <div id="quiz-setup" class="bg-white p-6 md:p-8 rounded-lg shadow-md max-w-3xl mx-auto">
+                <h3 class="text-2xl font-bold text-center text-[#58508d] mb-6">Pengaturan Kuis</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                    <div class="flex items-center space-x-4">
+                        <label class="font-semibold">Jumlah Soal:</label>
+                        <div class="flex items-center gap-4">
+                            <label class="flex items-center"><input type="radio" name="questionCount" value="5" class="mr-1" checked> 5</label>
+                            <label class="flex items-center"><input type="radio" name="questionCount" value="10" class="mr-1"> 10</label>
+                            <label class="flex items-center"><input type="radio" name="questionCount" value="custom" class="mr-1"> Kustom:</label>
+                            <input type="number" id="customQuestionCount" class="w-16 p-1 border rounded" min="1" max="20" placeholder="1-20">
+                        </div>
+                    </div>
+                    <button id="startQuizBtn" class="w-full md:w-auto bg-[#ff6361] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#e65a58] transition duration-300">Mulai Kuis!</button>
+                </div>
+            </div>
+
+            <div id="quiz-loading" class="hidden text-center p-8">
+                <div class="loader mx-auto"></div>
+                <p class="mt-4 text-[#58508d] font-semibold text-lg">Gemini sedang menyiapkan soal-soal terbaik untuk Anda...</p>
+            </div>
+
+            <div id="quiz-container" class="hidden mt-8 max-w-3xl mx-auto">
+                <!-- Pertanyaan Kuis Akan Tampil di Sini -->
+            </div>
+
+            <div id="quiz-results-container" class="hidden bg-white p-6 md:p-8 rounded-lg shadow-md mt-8 max-w-3xl mx-auto">
+                <!-- Hasil Kuis Akan Tampil di Sini -->
+            </div>
+
+        </section>
+
+    </main>
+    
+    <!-- Tombol Melayang Tanya Ahli -->
+    <button id="askExpertBtn" class="fixed bottom-6 right-6 bg-[#003f5c] text-white font-bold py-3 px-5 rounded-full shadow-lg hover:bg-[#003147] transition duration-300 z-50 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.546-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        Tanya Ahli
+    </button>
+
+    <!-- Modal Rumus -->
+    <div id="formulaModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="modal-loader" class="hidden flex-col items-center justify-center text-center">
+                <div class="loader"></div>
+                <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang menjelaskan...</p>
+            </div>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+    
+    <!-- Modal Tanya Ahli -->
+    <div id="expertModal" class="modal">
+        <div class="modal-content max-w-2xl">
+            <div class="flex justify-between items-center pb-3 border-b">
+                <h3 class="text-2xl font-bold text-[#003f5c]">Tanya Ahli Geoteknik</h3>
+                <span id="closeExpertModal" class="close-button">&times;</span>
+            </div>
+            <div id="chat-history" class="mt-4 h-80 overflow-y-auto p-4 bg-gray-50 rounded-lg">
+                <div class="chat-message bot mb-4">
+                    <p class="rounded-lg p-3">Halo! Saya asisten geoteknik AI Anda. Silakan ajukan pertanyaan apa pun tentang mekanika tanah.</p>
+                </div>
+            </div>
+            <div id="chat-loading" class="hidden text-center p-4">
+                <div class="loader mx-auto"></div>
+                <p class="text-sm text-gray-500 mt-2">Ahli sedang berpikir...</p>
+            </div>
+            <div class="mt-4 flex gap-4">
+                <input type="text" id="chat-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#58508d] focus:border-transparent transition" placeholder="Ketik pertanyaan Anda di sini...">
+                <button id="send-chat-btn" class="bg-[#ff6361] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#e65a58] transition duration-300">Kirim</button>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="text-center p-6 bg-[#003f5c] text-white mt-8">
+        <p>Infografis dibuat berdasarkan Bab 1 "Mekanika Tanah I" oleh Hary Christady Hardiyatmo.</p>
+        <p class="text-sm mt-2">Visualisasi oleh Canvas Infographics. Tidak ada Mermaid JS atau SVG yang digunakan dalam pembuatan.</p>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const colorPalette = {
+                blue: '#003f5c',
+                purple: '#58508d',
+                pink: '#bc5090',
+                red: '#ff6361',
+                orange: '#ffa600',
+            };
+
+            function initializeAllCharts() {
+                const commonOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 14 } } },
+                        tooltip: { titleFont: { family: 'Inter', size: 16, weight: 'bold' }, bodyFont: { family: 'Inter', size: 14 } }
+                    },
+                    scales: {
+                        x: { ticks: { font: { family: 'Inter', size: 12 } }, grid: { display: false } },
+                        y: { ticks: { font: { family: 'Inter', size: 12 } }, beginAtZero: true }
+                    }
+                };
+                 const unitWeightCtx = document.getElementById('unitWeightChart')?.getContext('2d');
+                if (unitWeightCtx) {
+                    new Chart(unitWeightCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Pasir seragam, tdk padat', 'Pasir seragam, padat', 'Pasir campuran, tdk padat', 'Pasir campuran, padat', 'Lempung sdkt organik', 'Lempung sgt organik'],
+                            datasets: [{
+                                label: 'Berat Volume Kering (γd) in kN/m³',
+                                data: [14.3, 17.5, 15.9, 18.6, 9.9, 7.8],
+                                backgroundColor: [colorPalette.orange, colorPalette.red, colorPalette.pink, colorPalette.purple, colorPalette.blue, '#7a5195'],
+                            }]
+                        },
+                        options: commonOptions
+                    });
+                }
+                const gradationCtx = document.getElementById('gradationChart')?.getContext('2d');
+                if (gradationCtx) {
+                    new Chart(gradationCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Kerikil Bergradasi Baik', 'Pasir Bergradasi Baik'],
+                            datasets: [
+                                { label: 'Koefisien Keseragaman (Cu)', data: [4, 6], backgroundColor: colorPalette.purple },
+                                { label: 'Koefisien Gradasi (Cc)', data: [2, 2], backgroundColor: colorPalette.red }
+                            ]
+                        },
+                        options: { ...commonOptions, scales: { ...commonOptions.scales, y: { ...commonOptions.scales.y, title: { display: true, text: 'Nilai Minimum (Cu) / Rentang (Cc: 1-3)' } } } }
+                    });
+                }
+                const compositionCtx = document.getElementById('compositionChart')?.getContext('2d');
+                if (compositionCtx) {
+                    new Chart(compositionCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Pasir', 'Lanau', 'Lempung', 'Kerikil'],
+                            datasets: [{
+                                label: 'Komposisi Persen',
+                                data: [40, 30, 20, 10],
+                                backgroundColor: [colorPalette.orange, colorPalette.red, colorPalette.purple, colorPalette.blue],
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                    });
+                }
+                const softClayCtx = document.getElementById('softClayChart')?.getContext('2d');
+                if (softClayCtx) {
+                    new Chart(softClayCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Kuat Geser (cu)', 'Nilai SPT (N)'],
+                            datasets: [{ label: 'Nilai Tipikal Rendah', data: [20, 3], backgroundColor: [colorPalette.pink, colorPalette.orange] }]
+                        },
+                        options: { ...commonOptions, indexAxis: 'y', scales: { x: { max: 40 } } }
+                    });
+                }
+                const organicSoilCtx = document.getElementById('organicSoilChart')?.getContext('2d');
+                if (organicSoilCtx) {
+                    const organicSoilOptions = {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 14 } } },
+                            tooltip: { titleFont: { family: 'Inter', size: 16, weight: 'bold' }, bodyFont: { family: 'Inter', size: 14 } }
+                        },
+                        scales: {
+                            x: { beginAtZero: true, ticks: { font: { family: 'Inter', size: 12 } } },
+                            y: { ticks: { font: { family: 'Inter', size: 12 } } }
+                        }
+                    };
+                    new Chart(organicSoilCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Kadar Air (w)%', 'Kandungan Organik %'],
+                            datasets: [{ label: 'Nilai Tipikal Sangat Tinggi', data: [400, 60], backgroundColor: [colorPalette.purple, colorPalette.blue] }]
+                        },
+                        options: organicSoilOptions
+                    });
+                }
+                const expansiveSoilCtx = document.getElementById('expansiveSoilChart')?.getContext('2d');
+                if (expansiveSoilCtx) {
+                    new Chart(expansiveSoilCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Indeks Plastisitas (PI)', 'Aktivitas (A)'],
+                            datasets: [{ label: 'Nilai Tipikal Tinggi', data: [35, 1.5], backgroundColor: [colorPalette.red, colorPalette.orange] }]
+                        },
+                        options: { ...commonOptions, indexAxis: 'y', scales: { x: { max: 50 } } }
+                    });
+                }
+                const collapsibleSoilCtx = document.getElementById('collapsibleSoilChart')?.getContext('2d');
+                if (collapsibleSoilCtx) {
+                    new Chart(collapsibleSoilCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Angka Pori (e)', 'γd (kN/m³)'],
+                            datasets: [{ label: 'Kondisi Khas', data: [1.2, 14], backgroundColor: [colorPalette.purple, colorPalette.blue] }]
+                        },
+                        options: { ...commonOptions, indexAxis: 'y', scales: { x: { max: 20 } } }
+                    });
+                }
+
+                // Chart: Grafik Plastisitas (Statis)
+                const plasticityCtx = document.getElementById('plasticityChart')?.getContext('2d');
+                if (plasticityCtx) {
+                    const aLine = [];
+                    const uLine = [];
+                    for (let ll = 8; ll <= 100; ll++) {
+                        if (ll >= 20) { aLine.push({x: ll, y: 0.73 * (ll - 20)}); }
+                        uLine.push({x: ll, y: 0.9 * (ll - 8)});
+                    }
+
+                    new Chart(plasticityCtx, {
+                        type: 'scatter',
+                        data: {
+                            datasets: [
+                                { label: 'A-Line', data: aLine, borderColor: colorPalette.red, borderWidth: 2, showLine: true, pointRadius: 0, fill: false },
+                                { label: 'U-Line', data: uLine, borderColor: colorPalette.purple, borderWidth: 2, borderDash: [5, 5], showLine: true, pointRadius: 0, fill: false }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: { display: true, text: 'Grafik Plastisitas (USCS)', font: { size: 18, family: 'Inter' } },
+                                legend: { position: 'bottom' }
+                            },
+                            scales: {
+                                x: { type: 'linear', position: 'bottom', title: { display: true, text: 'Batas Cair (LL) [%]' }, min: 0, max: 100 },
+                                y: { title: { display: true, text: 'Indeks Plastisitas (PI) [%]' }, min: 0, max: 70 }
+                            },
+                            animation: {
+                                onComplete: (animation) => {
+                                    const chart = animation.chart;
+                                    const ctx = chart.ctx;
+                                    ctx.save();
+                                    ctx.font = 'bold 14px Inter';
+                                    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+                                    ctx.textAlign = 'center';
+                                    
+                                    const xAxis = chart.scales.x;
+                                    const yAxis = chart.scales.y;
+
+                                    const positions = {
+                                        'CL': {x: 35, y: 20}, 'CH': {x: 75, y: 45},
+                                        'ML': {x: 35, y: 5}, 'MH': {x: 75, y: 20},
+                                        'CL-ML': {x: 22, y: 5.5}
+                                    };
+                                    
+                                    for(const [label, pos] of Object.entries(positions)) {
+                                       const pixelX = xAxis.getPixelForValue(pos.x);
+                                       const pixelY = yAxis.getPixelForValue(pos.y);
+                                       ctx.fillText(label, pixelX, pixelY);
+                                    }
+
+                                    ctx.beginPath();
+                                    ctx.strokeStyle = 'rgba(100, 100, 100, 0.8)';
+                                    ctx.lineWidth = 1.5;
+                                    ctx.setLineDash([6, 6]);
+                                    ctx.moveTo(xAxis.getPixelForValue(50), yAxis.top);
+                                    ctx.lineTo(xAxis.getPixelForValue(50), yAxis.bottom);
+                                    ctx.stroke();
+                                    ctx.restore();
+                                }
+                            }
+                        }
+                    });
+                }
+                 // Chart: Grafik Plastisitas (Interaktif)
+                const interactivePlasticityCtx = document.getElementById('interactivePlasticityChart')?.getContext('2d');
+                if (interactivePlasticityCtx) {
+                    const aLine = [];
+                    const uLine = [];
+                    for (let ll = 8; ll <= 100; ll++) {
+                        if (ll >= 20) { aLine.push({x: ll, y: 0.73 * (ll - 20)}); }
+                        uLine.push({x: ll, y: 0.9 * (ll - 8)});
+                    }
+
+                    window.interactivePlasticityChart = new Chart(interactivePlasticityCtx, {
+                        type: 'scatter',
+                        data: {
+                            datasets: [
+                                { label: 'A-Line', data: aLine, borderColor: colorPalette.red, borderWidth: 2, showLine: true, pointRadius: 0, fill: false },
+                                { label: 'U-Line', data: uLine, borderColor: colorPalette.purple, borderWidth: 2, borderDash: [5, 5], showLine: true, pointRadius: 0, fill: false },
+                                { label: 'Titik Data Anda', data: [], backgroundColor: colorPalette.blue, pointRadius: 8, pointHoverRadius: 10 }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { position: 'bottom' } },
+                            scales: {
+                                x: { type: 'linear', position: 'bottom', title: { display: true, text: 'Batas Cair (LL) [%]' }, min: 0, max: 100 },
+                                y: { title: { display: true, text: 'Indeks Plastisitas (PI) [%]' }, min: 0, max: 70 }
+                            },
+                            animation: {
+                                onComplete: (animation) => {
+                                    const chart = animation.chart;
+                                    const ctx = chart.ctx;
+                                    ctx.save();
+                                    ctx.font = 'bold 14px Inter';
+                                    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+                                    ctx.textAlign = 'center';
+                                    
+                                    const xAxis = chart.scales.x;
+                                    const yAxis = chart.scales.y;
+
+                                    const positions = {
+                                        'CL': {x: 35, y: 20}, 'CH': {x: 75, y: 45},
+                                        'ML': {x: 35, y: 5}, 'MH': {x: 75, y: 20},
+                                        'CL-ML': {x: 22, y: 5.5}
+                                    };
+                                    
+                                    for(const [label, pos] of Object.entries(positions)) {
+                                       const pixelX = xAxis.getPixelForValue(pos.x);
+                                       const pixelY = yAxis.getPixelForValue(pos.y);
+                                       ctx.fillText(label, pixelX, pixelY);
+                                    }
+
+                                    ctx.beginPath();
+                                    ctx.strokeStyle = 'rgba(100, 100, 100, 0.8)';
+                                    ctx.lineWidth = 1.5;
+                                    ctx.setLineDash([6, 6]);
+                                    ctx.moveTo(xAxis.getPixelForValue(50), yAxis.top);
+                                    ctx.lineTo(xAxis.getPixelForValue(50), yAxis.bottom);
+                                    ctx.stroke();
+                                    ctx.restore();
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                const compactionCtx = document.getElementById('compactionCurveChart')?.getContext('2d');
+                if (compactionCtx) {
+                    window.compactionCurveChart = new Chart(compactionCtx, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [
+                                { label: 'Kurva Pemadatan', data: [], borderColor: colorPalette.red, tension: 0.4 },
+                                { label: 'Titik Optimum', data: [], backgroundColor: colorPalette.blue, pointRadius: 8, type: 'scatter' }
+                            ]
+                        },
+                        options: { ...commonOptions, scales: { x: { ...commonOptions.scales.x, title: { display: true, text: 'Kadar Air, w (%)'}}, y: { ...commonOptions.scales.y, title: { display: true, text: 'Berat Volume Kering, γd (kN/m³)'}}}}
+                    });
+                }
+            }
+
+            // ---- Inisialisasi Event Listeners dan Fungsi Lainnya ----
+            function setupEventListeners() {
+                document.getElementById('finesSlider')?.addEventListener('input', (e) => document.getElementById('finesValue').textContent = e.target.value);
+                const llSlider = document.getElementById('llSlider');
+                const piSlider = document.getElementById('piSlider');
+                llSlider?.addEventListener('input', (e) => {
+                    document.getElementById('llValue').textContent = e.target.value;
+                    updateInteractivePlasticityChart();
+                });
+                piSlider?.addEventListener('input', (e) => {
+                    document.getElementById('piValue').textContent = e.target.value;
+                    updateInteractivePlasticityChart();
+                });
+
+                document.getElementById('analyzeProjectBtn')?.addEventListener('click', handleProjectAnalysis);
+                document.getElementById('explainSoilBtn')?.addEventListener('click', handleSoilExplanation);
+                document.getElementById('generateCaseStudyBtn')?.addEventListener('click', handleCaseStudyGeneration);
+                document.getElementById('interpretTestBtn')?.addEventListener('click', handleTestInterpretation);
+                document.getElementById('generateCompactionCurveBtn')?.addEventListener('click', handleCompactionCurve);
+                const formulaModal = document.getElementById("formulaModal");
+                document.querySelectorAll('.explain-formula-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        formulaModal.style.display = "block";
+                        handleFormulaExplanation(e.target.getAttribute('data-formula'));
+                    });
+                });
+                document.querySelector("#formulaModal .close-button")?.addEventListener('click', () => formulaModal.style.display = "none");
+                
+                document.getElementById('startQuizBtn')?.addEventListener('click', startQuiz);
+                
+                const expertModal = document.getElementById("expertModal");
+                document.getElementById('askExpertBtn')?.addEventListener('click', () => expertModal.style.display = 'block');
+                document.getElementById('closeExpertModal')?.addEventListener('click', () => expertModal.style.display = 'none');
+                document.getElementById('send-chat-btn')?.addEventListener('click', handleAskExpert);
+                document.getElementById('chat-input')?.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') handleAskExpert();
+                });
+                
+                window.addEventListener('click', (event) => { 
+                    if (event.target == formulaModal) { formulaModal.style.display = "none"; }
+                    if (event.target == expertModal) { expertModal.style.display = "none"; }
+                });
+
+                // --- LOGIKA PEMILIHAN MODE API BARU ---
+                const demoModeBtn = document.getElementById('demoModeBtn');
+                const personalApiModeBtn = document.getElementById('personalApiModeBtn');
+                const apiKeyContainer = document.getElementById('personal-api-key-container');
+                const apiKeyInput = document.getElementById('apiKeyInput');
+                const apiKeyStatus = document.getElementById('apiKeyStatus');
+
+                if(demoModeBtn) {
+                    demoModeBtn.addEventListener('click', () => {
+                        apiKeyInput.value = '';
+                        apiKeyContainer.classList.add('hidden');
+                        apiKeyStatus.textContent = 'Mode Demo Aktif. Anda bisa langsung menggunakan fitur AI.';
+                        apiKeyStatus.className = 'text-center mb-4 font-semibold h-6 text-green-700';
+                        setTimeout(() => { 
+                            if (apiKeyInput.value === '') {
+                                apiKeyStatus.textContent = ''; 
+                            }
+                        }, 4000);
+                    });
+                }
+
+                if(personalApiModeBtn) {
+                    personalApiModeBtn.addEventListener('click', () => {
+                        apiKeyContainer.classList.remove('hidden');
+                        apiKeyStatus.textContent = 'Silakan masukkan API Key Anda untuk melanjutkan.';
+                        apiKeyStatus.className = 'text-center mb-4 font-semibold h-6 text-blue-700';
+                        apiKeyInput.focus();
+                    });
+                }
+
+                if(apiKeyInput) {
+                    apiKeyInput.addEventListener('input', () => {
+                        if (apiKeyInput.value.trim() !== '') {
+                            apiKeyStatus.textContent = 'API Key diterima. Anda sekarang dapat menggunakan fitur AI.';
+                            apiKeyStatus.className = 'text-center mb-4 font-semibold h-6 text-green-700';
+                        } else {
+                            apiKeyStatus.textContent = 'Silakan masukkan API Key Anda untuk melanjutkan.';
+                            apiKeyStatus.className = 'text-center mb-4 font-semibold h-6 text-blue-700';
+                        }
+                    });
+                }
+            }
+
+            const markdownToHtml = (text) => {
+                let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
+                html = html.replace(/([A-Za-zγ])_(\w+)/g, '$1<sub>$2</sub>').replace(/\n/g, '<br>');
+                return `<p>${html}</p>`;
+            }
+
+            const callGemini = async (payload, outputElement, loaderElement) => {
+                loaderElement.style.display = 'flex';
+                if (outputElement) outputElement.style.display = 'none';
+
+                const apiKey = document.getElementById('apiKeyInput').value || "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const result = await response.json();
+                    const candidate = result.candidates?.[0];
+                    if (candidate && candidate.content?.parts?.[0]?.text) {
+                         if (payload.generationConfig?.responseMimeType === "application/json") {
+                            return JSON.parse(candidate.content.parts[0].text);
+                        } else {
+                            if (outputElement) {
+                                outputElement.innerHTML = markdownToHtml(candidate.content.parts[0].text);
+                                outputElement.style.display = 'block';
+                            }
+                            return candidate.content.parts[0].text;
+                        }
+                    } else { throw new Error("Invalid response from API."); }
+                } catch (error) {
+                    console.error("Gemini API call failed:", error);
+                    let errorMsg = "Terjadi kesalahan. Silakan coba lagi.";
+                    if (error.message.includes('401') || error.message.includes('403')) {
+                       errorMsg = "<strong>Autentikasi Gagal.</strong> Pastikan API Key Anda valid.";
+                    }
+                    if (outputElement) {
+                        outputElement.innerHTML = `<p class="text-red-500">${errorMsg}</p>`;
+                        outputElement.style.display = 'block';
+                    }
+                } finally {
+                    loaderElement.style.display = 'none';
+                }
+            };
+            
+            function handleFormulaExplanation(formula) {
+                const systemInstruction = "Anda adalah dosen mekanika tanah yang ahli menjelaskan konsep sulit menjadi mudah dipahami. Gunakan Bahasa Indonesia.";
+                const prompt = `Jelaskan rumus: "${formula}". Mulai dengan konsep, jelaskan tiap variabel (gunakan format underscore, misal W_w), dan akhiri dengan contoh soal sederhana. Jangan gunakan Markdown.`;
+                const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: systemInstruction }] } };
+                callGemini(payload, document.getElementById("modal-body"), document.getElementById("modal-loader"));
+            }
+            function handleProjectAnalysis() {
+                const systemInstruction = "Anda adalah insinyur geoteknik ahli. Berikan jawaban dalam Bahasa Indonesia.";
+                const prompt = `Analisis kelayakan tanah (Lolos No. 200 = ${document.getElementById('finesSlider').value}%, LL = ${document.getElementById('llSlider').value}, PI = ${document.getElementById('piSlider').value}) untuk proyek '${document.getElementById('projectType').value}'. Jelaskan tantangan utamanya secara ringkas.`;
+                const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: systemInstruction }] } };
+                callGemini(payload, document.getElementById("gemini-output"), document.getElementById("loading-indicator"));
+            }
+            function handleSoilExplanation() {
+                const systemInstruction = "Anda adalah dosen mekanika tanah. Berikan jawaban dalam Bahasa Indonesia.";
+                const prompt = `Jelaskan perilaku rekayasa dari tanah (Lolos No. 200 = ${document.getElementById('finesSlider').value}%, LL = ${document.getElementById('llSlider').value}, PI = ${document.getElementById('piSlider').value}). Sebutkan kemungkinan klasifikasi USCS dan jelaskan kekuatan, kompresibilitas, & permeabilitasnya secara umum.`;
+                const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: systemInstruction }] } };
+                callGemini(payload, document.getElementById("gemini-output"), document.getElementById("loading-indicator"));
+            }
+            function handleCaseStudyGeneration() {
+                const systemInstruction = "Anda adalah konsultan geoteknik senior. Gunakan Bahasa Indonesia.";
+                const prompt = `Buat studi kasus singkat (sekitar 150 kata) untuk proyek '${document.getElementById('caseProjectType').value}' di atas '${document.getElementById('caseSoilType').value}'. Mencakup: 1. Tantangan Utama, 2. Rekomendasi Penyelidikan, 3. Solusi Rekayasa.`;
+                const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: systemInstruction }] } };
+                callGemini(payload, document.getElementById("case-study-output"), document.getElementById("case-loading-indicator"));
+            }
+            function handleTestInterpretation() {
+                const testValue = document.getElementById('testValue').value;
+                if (!testValue.trim()) {
+                    document.getElementById('test-interpreter-output').innerHTML = "<p>Harap masukkan nilai hasil uji.</p>";
+                    return;
+                }
+                const systemInstruction = "Anda adalah insinyur geoteknik senior. Gunakan Bahasa Indonesia.";
+                const prompt = `Interpretasikan hasil '${document.getElementById('testType').value}' dengan nilai '${testValue}'. Jelaskan artinya, implikasi ke perilaku tanah, dan implikasi praktis untuk desain.`;
+                const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: systemInstruction }] } };
+                callGemini(payload, document.getElementById("test-interpreter-output"), document.getElementById("test-loading-indicator"));
+            }
+            async function handleCompactionCurve() {
+                const systemInstruction = "Anda adalah ahli geoteknik. Hanya berikan respons JSON valid.";
+                const prompt = `Hasilkan data kurva pemadatan Standard Proctor tipikal untuk tanah '${document.getElementById('compactionSoilType').value}'. Sediakan gamma_d_max (15-21), w_opt (8-25), 7 titik kurva (curvePoints), dan penjelasan singkat (explanation).`;
+                const schema = {
+                    type: "OBJECT",
+                    properties: {
+                        "gamma_d_max": { "type": "NUMBER" }, "w_opt": { "type": "NUMBER" },
+                        "curvePoints": { "type": "ARRAY", "items": { "type": "OBJECT", "properties": { "w": { "type": "NUMBER" }, "gamma_d": { "type": "NUMBER" } } } },
+                        "explanation": { "type": "STRING" }
+                    }
+                };
+                const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: systemInstruction }] }, generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
+                const data = await callGemini(payload, null, document.getElementById("compaction-loading-indicator-text"));
+                if (data && typeof data === 'object') {
+                    const chart = window.compactionCurveChart;
+                    chart.data.labels = data.curvePoints.map(p => p.w.toFixed(1));
+                    chart.data.datasets[0].data = data.curvePoints.map(p => p.gamma_d.toFixed(2));
+                    chart.data.datasets[1].data = [{ x: data.w_opt.toFixed(1), y: data.gamma_d_max.toFixed(2) }];
+                    chart.update();
+                    document.getElementById('compaction-explanation').innerHTML = markdownToHtml(data.explanation);
+                } else {
+                    document.getElementById('compaction-explanation').innerHTML = "<p>Gagal menghasilkan data.</p>";
+                }
+            }
+
+            // ---- LOGIKA KUIS ----
+            let quizState = {};
+
+            async function startQuiz() {
+                const selectedOption = document.querySelector('input[name="questionCount"]:checked').value;
+                let numQuestions = selectedOption === 'custom' 
+                    ? parseInt(document.getElementById('customQuestionCount').value) 
+                    : parseInt(selectedOption);
+
+                if (isNaN(numQuestions) || numQuestions < 1 || numQuestions > 20) {
+                    alert("Masukkan jumlah soal antara 1 dan 20.");
+                    return;
+                }
+
+                document.getElementById('quiz-setup').style.display = 'none';
+                document.getElementById('quiz-loading').style.display = 'block';
+
+                const systemInstruction = "Anda adalah seorang ahli geoteknik yang membuat soal kuis. Buat soal berdasarkan konteks materi tentang komposisi tanah, properti dasar, gradasi, batas Atterberg, klasifikasi USCS, dan tanah bermasalah.";
+                const prompt = `Buatkan saya kuis pilihan ganda sejumlah ${numQuestions} soal. Setiap soal harus memiliki 4 pilihan jawaban.`;
+                const schema = {
+                    type: "ARRAY",
+                    items: {
+                        type: "OBJECT",
+                        properties: {
+                            "question": { "type": "STRING" },
+                            "options": { "type": "ARRAY", "items": { "type": "STRING" } },
+                            "correctAnswer": { "type": "STRING" },
+                            "explanation": { "type": "STRING" },
+                            "topic": { "type": "STRING" }
+                        },
+                         "required": ["question", "options", "correctAnswer", "explanation", "topic"]
+                    }
+                };
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    systemInstruction: { parts: [{ text: systemInstruction }] },
+                    generationConfig: { responseMimeType: "application/json", responseSchema: schema }
+                };
+                
+                const questions = await callGemini(payload, null, document.getElementById('quiz-loading'));
+                
+                document.getElementById('quiz-loading').style.display = 'none';
+                if(questions && questions.length > 0) {
+                    quizState = {
+                        questions,
+                        currentQuestionIndex: 0,
+                        score: 0,
+                        wrongAnswers: []
+                    };
+                    document.getElementById('quiz-container').style.display = 'block';
+                    displayCurrentQuestion();
+                } else {
+                    document.getElementById('quiz-setup').style.display = 'block';
+                    alert("Gagal membuat kuis. Coba lagi.");
+                }
+            }
+            function displayCurrentQuestion() {
+                const quizContainer = document.getElementById('quiz-container');
+                const questionData = quizState.questions[quizState.currentQuestionIndex];
+                const shuffledOptions = [...questionData.options].sort(() => Math.random() - 0.5);
+                let optionsHtml = shuffledOptions.map(option => 
+                    `<button class="quiz-option w-full text-left p-4 bg-white rounded-lg shadow hover:shadow-md border-2 border-gray-200" onclick="handleAnswer(this, \`${option.replace(/'/g, "\\'")}\`)">${option}</button>`
+                ).join('');
+                quizContainer.innerHTML = `
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <p class="text-sm font-semibold text-[#58508d]">Soal ${quizState.currentQuestionIndex + 1} dari ${quizState.questions.length}</p>
+                        <h4 class="text-xl md:text-2xl font-bold my-4">${questionData.question}</h4>
+                        <div class="space-y-4">${optionsHtml}</div>
+                        <div id="feedback-container" class="mt-4"></div>
+                    </div>
+                `;
+            }
+            window.handleAnswer = function(button, selectedAnswer) {
+                const questionData = quizState.questions[quizState.currentQuestionIndex];
+                const isCorrect = selectedAnswer === questionData.correctAnswer;
+                const feedbackContainer = document.getElementById('feedback-container');
+                Array.from(button.parentElement.children).forEach(btn => {
+                    btn.disabled = true;
+                    const optionText = btn.textContent;
+                    if (optionText === questionData.correctAnswer) {
+                        btn.classList.add('correct');
+                    } else if (optionText === selectedAnswer) {
+                        btn.classList.add('incorrect');
+                    }
+                });
+                if (isCorrect) {
+                    quizState.score++;
+                    feedbackContainer.innerHTML = `<div class="p-4 bg-green-100 text-green-800 rounded-lg"><p class="font-bold">Benar!</p><p>${questionData.explanation}</p></div>`;
+                } else {
+                    quizState.wrongAnswers.push(questionData);
+                    feedbackContainer.innerHTML = `<div class="p-4 bg-red-100 text-red-800 rounded-lg"><p class="font-bold">Salah.</p><p>${questionData.explanation}</p></div>`;
+                }
+                const nextButton = document.createElement('button');
+                nextButton.innerText = quizState.currentQuestionIndex < quizState.questions.length - 1 ? 'Soal Berikutnya' : 'Lihat Hasil';
+                nextButton.className = 'w-full mt-6 bg-[#003f5c] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#003147] transition duration-300';
+                nextButton.onclick = () => {
+                    quizState.currentQuestionIndex++;
+                    if (quizState.currentQuestionIndex < quizState.questions.length) {
+                        displayCurrentQuestion();
+                    } else {
+                        showResults();
+                    }
+                };
+                feedbackContainer.appendChild(nextButton);
+            }
+            async function showResults() {
+                document.getElementById('quiz-container').style.display = 'none';
+                const resultsContainer = document.getElementById('quiz-results-container');
+                resultsContainer.style.display = 'block';
+                resultsContainer.innerHTML = `
+                    <h3 class="text-2xl font-bold text-center text-[#003f5c] mb-4">Hasil Kuis Anda</h3>
+                    <p class="text-center text-4xl font-bold mb-6">${quizState.score} <span class="text-xl font-normal text-gray-600">/ ${quizState.questions.length} Benar</span></p>
+                    <div id="eval-loading" class="text-center p-4">
+                        <div class="loader mx-auto"></div>
+                        <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang mengevaluasi jawaban Anda...</p>
+                    </div>
+                    <div id="evaluation-output"></div>
+                    <button onclick="restartQuiz()" class="w-full mt-6 bg-[#ff6361] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#e65a58] transition duration-300">Ulangi Kuis</button>
+                `;
+                const topicsToReview = quizState.wrongAnswers.map(wa => wa.topic).filter((v, i, a) => a.indexOf(v) === i);
+                if (topicsToReview.length === 0) {
+                     document.getElementById('eval-loading').style.display = 'none';
+                     document.getElementById('evaluation-output').innerHTML = `<div class="p-4 bg-green-100 text-green-800 rounded-lg text-center"><p class="font-bold">Luar Biasa!</p><p>Anda menjawab semua pertanyaan dengan benar. Pemahaman Anda sangat baik!</p></div>`;
+                     return;
+                }
+                const systemInstruction = "Anda adalah seorang dosen geoteknik yang memberikan umpan balik yang memotivasi setelah kuis. Berikan evaluasi singkat dan sebutkan topik yang perlu dipelajari lagi dalam format daftar poin (bullet points).";
+                const prompt = `Seorang mahasiswa mendapatkan skor ${quizState.score} dari ${quizState.questions.length}. Mereka salah menjawab soal-soal dari topik berikut: ${topicsToReview.join(', ')}. Berikan evaluasi singkat dan saran materi apa yang perlu dipelajari lagi.`;
+                const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: systemInstruction }] } };
+                await callGemini(payload, document.getElementById('evaluation-output'), document.getElementById('eval-loading'));
+            }
+            window.restartQuiz = function() {
+                document.getElementById('quiz-results-container').style.display = 'none';
+                document.getElementById('quiz-setup').style.display = 'block';
+                quizState = {};
+            }
+
+             // ---- LOGIKA TANYA AHLI ----
+            async function handleAskExpert() {
+                const chatInput = document.getElementById('chat-input');
+                const chatHistory = document.getElementById('chat-history');
+                const userQuery = chatInput.value.trim();
+                if (!userQuery) return;
+
+                // Tampilkan pesan pengguna
+                chatHistory.innerHTML += `<div class="chat-message user mb-2"><p class="rounded-lg p-3">${userQuery}</p></div>`;
+                chatInput.value = '';
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                // Siapkan dan panggil Gemini
+                const systemInstruction = "Anda adalah seorang ahli dan dosen senior di bidang Teknik Geoteknik dan Mekanika Tanah. Jawab pertanyaan mahasiswa dengan jelas, akurat, dan ramah. Gunakan Bahasa Indonesia.";
+                const payload = { contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemInstruction }] } };
+                
+                const chatLoading = document.getElementById('chat-loading');
+                chatLoading.style.display = 'block';
+
+                const response = await callGemini(payload, null, chatLoading);
+                
+                chatLoading.style.display = 'none';
+
+                if(response){
+                    chatHistory.innerHTML += `<div class="chat-message bot mb-4"><p class="rounded-lg p-3">${markdownToHtml(response)}</p></div>`;
+                } else {
+                     chatHistory.innerHTML += `<div class="chat-message bot mb-4"><p class="rounded-lg p-3 text-red-500">Maaf, terjadi kesalahan. Tidak dapat menghubungi ahli saat ini.</p></div>`;
+                }
+                 chatHistory.scrollTop = chatHistory.scrollHeight;
+            }
+
+            // ---- FUNGSI UNTUK UPDATE GRAFIK PLASTISITAS INTERAKTIF ----
+            function updateInteractivePlasticityChart() {
+                if (window.interactivePlasticityChart) {
+                    const llValue = parseInt(document.getElementById('llSlider').value);
+                    const piValue = parseInt(document.getElementById('piSlider').value);
+                    window.interactivePlasticityChart.data.datasets[2].data = [{ x: llValue, y: piValue }];
+                    window.interactivePlasticityChart.update();
+                }
+            }
+
+
+            // Inisialisasi semuanya
+            initializeAllCharts();
+            setupEventListeners();
+            updateInteractivePlasticityChart(); // Panggil sekali di awal untuk plot titik awal
+        });
+    </script>
+</body>
+</html>
+
+
+
