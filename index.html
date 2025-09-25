@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bab Struktur Tanah dalam Geoteknik</title>
+    <title>BAB Struktur Tanah dalam Geoteknik</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1113,7 +1113,7 @@
 
                 if(demoModeBtn) {
                     demoModeBtn.addEventListener('click', () => {
-                        window.open('https://g.co/gemini/share/435c63da2c52', '_blank');
+                        window.open('https://gemini.google.com/share/435c63da2c52', '_blank');
                         apiKeyInput.value = '';
                         apiKeyContainer.classList.add('hidden');
                         apiKeyStatus.textContent = 'Mode Demo Aktif. Anda bisa langsung menggunakan fitur AI.';
@@ -1196,8 +1196,8 @@
             };
             
             function handleFormulaExplanation(formula) {
-                const systemInstruction = "Anda adalah dosen mekanika tanah yang ahli menjelaskan konsep sulit menjadi mudah dipahami. Gunakan Bahasa Indonesia.";
-                const prompt = `Jelaskan rumus: "${formula}". Mulai dengan konsep, jelaskan tiap variabel (gunakan format underscore, misal W_w), dan akhiri dengan contoh soal sederhana. Jangan gunakan Markdown.`;
+                const systemInstruction = "Anda adalah dosen mekanika tanah yang ahli menjelaskan konsep sulit menjadi mudah dipahami. Gunakan Bahasa Indonesia. Saat menjelaskan, gunakan format teks biasa untuk rumus (misal: S * e = w * Gs), format underscore untuk subskrip (misal: W_w untuk berat air), dan asteris untuk penekanan (*penting* atau **sangat penting**). Jangan pernah menggunakan format dolar seperti $$...$$.";
+                const prompt = `Jelaskan rumus ini secara detail: "${formula}". Mulai dengan konsep dasarnya, jelaskan setiap variabel, dan berikan contoh soal sederhana.`;
                 const payload = { contents: [{ parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: systemInstruction }] } };
                 callGemini(payload, document.getElementById("modal-body"), document.getElementById("modal-loader"));
             }
@@ -1404,7 +1404,7 @@
                 chatHistory.scrollTop = chatHistory.scrollHeight;
 
                 // Siapkan dan panggil Gemini
-                const systemInstruction = "Anda adalah seorang ahli dan dosen senior di bidang Teknik Geoteknik dan Mekanika Tanah. Jawab pertanyaan mahasiswa dengan jelas, akurat, dan ramah. Gunakan Bahasa Indonesia.";
+                const systemInstruction = "Anda adalah seorang ahli dan dosen senior di bidang Teknik Geoteknik. Jawab pertanyaan mahasiswa dengan jelas, akurat, dan ramah dalam Bahasa Indonesia. Saat menjelaskan, gunakan format teks biasa untuk rumus (misal: PI = LL - PL), format underscore untuk subskrip (misal: W_w untuk berat air), dan asteris untuk penekanan (*penting* atau **sangat penting**). Jangan pernah menggunakan format dolar seperti $$...$$.";
                 const payload = { contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemInstruction }] } };
                 
                 const chatLoading = document.getElementById('chat-loading');
@@ -1441,4 +1441,3 @@
     </script>
 </body>
 </html>
-
