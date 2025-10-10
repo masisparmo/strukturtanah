@@ -171,53 +171,6 @@
 
     <main class="container mx-auto p-4 md:p-8">
         
-        <section id="api-key-section" class="mb-12">
-            <div class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
-                <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-2">Selamat Datang!</h2>
-                <p class="text-center text-gray-600 mb-6">Untuk menggunakan fitur AI interaktif, silakan pilih mode akses Anda.</p>
-                
-                <div class="grid md:grid-cols-2 gap-6">
-                    <!-- Opsi 1: Mode GEMINI -->
-                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center flex flex-col">
-                        <h3 class="text-2xl font-bold text-[#58508d] mb-3">1. Mode GEMINI</h3>
-                        <p class="text-gray-600 flex-grow">
-                            Coba aplikasi menggunakan lingkungan GEMINI. Pilihan ini cocok untuk eksplorasi cepat tanpa perlu registrasi atau API key.
-                        </p>
-                        <button id="demoModeBtn" class="mt-6 w-full bg-[#58508d] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#4a437a] transition duration-300">
-                            Lanjutkan (Tanpa API Key)
-                        </button>
-                    </div>
-
-                    <!-- Opsi 2: API Key Pribadi -->
-                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center flex flex-col">
-                        <h3 class="text-2xl font-bold text-[#ff6361] mb-3">2. Mode API Pribadi</h3>
-                        <p class="text-gray-600 flex-grow">
-                            Gunakan Google AI API Key gratis Anda sendiri untuk mendapatkan performa penuh dan tanpa batas.
-                        </p>
-                        <button id="personalApiModeBtn" class="mt-6 w-full bg-[#ff6361] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#e65a58] transition duration-300">
-                            Masukkan API Key Pribadi
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Kontainer Input API Key (disembunyikan secara default) -->
-                <div id="personal-api-key-container" class="hidden mt-8 transition-all duration-500">
-                    <hr class="my-6">
-                    <h3 class="text-2xl font-bold text-center text-[#003f5c] mb-4">Konfigurasi API Key Pribadi</h3>
-                    <input type="password" id="apiKeyInput" class="w-full p-3 border border-gray-300 rounded-lg mb-4" placeholder="Tempelkan API Key Anda di sini...">
-                    <div id="apiKeyStatus" class="text-center mb-4 font-semibold h-6"></div>
-                    
-                    <h4 class="font-bold text-lg text-gray-700 mb-2">Cara Mendapatkan Google AI API Key Gratis:</h4>
-                    <ol class="list-decimal list-inside text-gray-600 space-y-1">
-                        <li>Kunjungi situs <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 hover:underline font-semibold">Google AI Studio</a>.</li>
-                        <li>Masuk menggunakan Akun Google Anda.</li>
-                        <li>Klik tombol <strong class="text-gray-800">"Create API key"</strong> untuk membuat kunci baru.</li>
-                        <li>Salin kunci yang muncul dan tempelkan di kolom di atas.</li>
-                    </ol>
-                </div>
-            </div>
-        </section>
-
         <section id="komposisi" class="mb-12">
             <h2 class="text-3xl font-bold text-center text-[#003f5c] mb-6">1. Komposisi Tiga Fase Tanah</h2>
             <p class="text-center max-w-2xl mx-auto mb-8">Secara fundamental, tanah bukanlah material padat tunggal. Ia merupakan sistem kompleks yang terdiri dari tiga komponen atau fase: butiran padat, air, dan udara.</p>
@@ -746,6 +699,72 @@
         Tanya Ahli
     </button>
 
+    <!-- Tombol Settings -->
+    <button id="settingsBtn" class="fixed top-6 right-6 bg-white/80 backdrop-blur-md text-[#003f5c] font-bold p-3 rounded-full shadow-lg hover:bg-white transition duration-300 z-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+    </button>
+
+    <!-- Modal Settings/API Key -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center pb-3 border-b mb-4">
+                <h3 id="settingsModalTitle" class="text-2xl font-bold text-[#003f5c]"></h3>
+                <span id="closeSettingsModal" class="close-button">&times;</span>
+            </div>
+
+            <div id="api-key-section">
+                <p class="text-center text-gray-600 mb-6">Untuk menggunakan fitur AI interaktif, silakan pilih mode akses Anda.</p>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Opsi 1: Mode GEMINI -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center flex flex-col">
+                        <h3 class="text-2xl font-bold text-[#58508d] mb-3">1. Mode GEMINI</h3>
+                        <p class="text-gray-600 flex-grow">
+                            Coba aplikasi menggunakan lingkungan GEMINI. Pilihan ini cocok untuk eksplorasi cepat tanpa perlu registrasi atau API key.
+                        </p>
+                        <button id="demoModeBtn" class="mt-6 w-full bg-[#58508d] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#4a437a] transition duration-300">
+                            Lanjutkan (Tanpa API Key)
+                        </button>
+                    </div>
+
+                    <!-- Opsi 2: API Key Pribadi -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center flex flex-col">
+                        <h3 class="text-2xl font-bold text-[#ff6361] mb-3">2. Mode API Pribadi</h3>
+                        <p class="text-gray-600 flex-grow">
+                            Gunakan Google AI API Key gratis Anda sendiri untuk mendapatkan performa penuh dan tanpa batas.
+                        </p>
+                        <button id="personalApiModeBtn" class="mt-6 w-full bg-[#ff6361] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#e65a58] transition duration-300">
+                            Masukkan API Key Pribadi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kontainer Input API Key (disembunyikan secara default) -->
+                <div id="personal-api-key-container" class="hidden mt-8 transition-all duration-500">
+                    <hr class="my-6">
+                    <h3 class="text-2xl font-bold text-center text-[#003f5c] mb-4">Konfigurasi API Key Pribadi</h3>
+                    <input type="password" id="apiKeyInput" class="w-full p-3 border border-gray-300 rounded-lg mb-4" placeholder="Tempelkan API Key Anda di sini...">
+                    <div id="apiKeyStatus" class="text-center mb-4 font-semibold h-6"></div>
+
+                    <h4 class="font-bold text-lg text-gray-700 mb-2">Cara Mendapatkan Google AI API Key Gratis:</h4>
+                    <ol class="list-decimal list-inside text-gray-600 space-y-1">
+                        <li>Kunjungi situs <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 hover:underline font-semibold">Google AI Studio</a>.</li>
+                        <li>Masuk menggunakan Akun Google Anda.</li>
+                        <li>Klik tombol <strong class="text-gray-800">"Create API key"</strong> untuk membuat kunci baru.</li>
+                        <li>Salin kunci yang muncul dan tempelkan di kolom di atas.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t">
+                <button id="closeSettingsModalBtn" class="w-full bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300">Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Rumus -->
     <div id="formulaModal" class="modal">
         <div class="modal-content">
@@ -1098,10 +1117,35 @@
                 document.getElementById('chat-input')?.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') handleAskExpert();
                 });
+
+                // --- LOGIKA MODAL BARU ---
+                const settingsModal = document.getElementById('settingsModal');
+                const settingsBtn = document.getElementById('settingsBtn');
+                const closeSettingsModal = document.getElementById('closeSettingsModal');
+                const closeSettingsModalBtn = document.getElementById('closeSettingsModalBtn');
+                const settingsModalTitle = document.getElementById('settingsModalTitle');
+
+                const openSettingsModal = (isInitial = false) => {
+                    settingsModal.style.display = 'block';
+                    if (isInitial) {
+                        settingsModalTitle.textContent = 'Selamat Datang!';
+                    } else {
+                        settingsModalTitle.textContent = 'KONFIGURASI WEB';
+                    }
+                };
+
+                const closeTheSettingsModal = () => {
+                    settingsModal.style.display = 'none';
+                };
+
+                settingsBtn.addEventListener('click', () => openSettingsModal(false));
+                closeSettingsModal.addEventListener('click', closeTheSettingsModal);
+                closeSettingsModalBtn.addEventListener('click', closeTheSettingsModal);
                 
                 window.addEventListener('click', (event) => { 
                     if (event.target == formulaModal) { formulaModal.style.display = "none"; }
                     if (event.target == expertModal) { expertModal.style.display = "none"; }
+                    if (event.target == settingsModal) { closeTheSettingsModal(); }
                 });
 
                 // --- LOGIKA PEMILIHAN MODE API BARU ---
@@ -1111,18 +1155,21 @@
                 const apiKeyInput = document.getElementById('apiKeyInput');
                 const apiKeyStatus = document.getElementById('apiKeyStatus');
 
+                // Muat API Key dari Local Storage saat halaman dimuat
+                const savedApiKey = localStorage.getItem('googleApiKey');
+                if (savedApiKey) {
+                    apiKeyInput.value = savedApiKey;
+                }
+
                 if(demoModeBtn) {
                     demoModeBtn.addEventListener('click', () => {
                         window.open('https://gemini.google.com/share/435c63da2c52', '_blank');
                         apiKeyInput.value = '';
+                        localStorage.removeItem('googleApiKey');
                         apiKeyContainer.classList.add('hidden');
                         apiKeyStatus.textContent = 'Mode Demo Aktif. Anda bisa langsung menggunakan fitur AI.';
                         apiKeyStatus.className = 'text-center mb-4 font-semibold h-6 text-green-700';
-                        setTimeout(() => { 
-                            if (apiKeyInput.value === '') {
-                                apiKeyStatus.textContent = ''; 
-                            }
-                        }, 4000);
+                        setTimeout(closeTheSettingsModal, 1000);
                     });
                 }
 
@@ -1137,14 +1184,23 @@
 
                 if(apiKeyInput) {
                     apiKeyInput.addEventListener('input', () => {
-                        if (apiKeyInput.value.trim() !== '') {
+                        const key = apiKeyInput.value.trim();
+                        if (key !== '') {
                             apiKeyStatus.textContent = 'API Key diterima. Anda sekarang dapat menggunakan fitur AI.';
                             apiKeyStatus.className = 'text-center mb-4 font-semibold h-6 text-green-700';
+                            localStorage.setItem('googleApiKey', key);
+                            setTimeout(closeTheSettingsModal, 1000);
                         } else {
                             apiKeyStatus.textContent = 'Silakan masukkan API Key Anda untuk melanjutkan.';
                             apiKeyStatus.className = 'text-center mb-4 font-semibold h-6 text-blue-700';
+                            localStorage.removeItem('googleApiKey');
                         }
                     });
+                }
+
+                // Tampilkan modal saat pertama kali jika tidak ada API Key
+                if (!savedApiKey) {
+                    openSettingsModal(true);
                 }
             }
 
