@@ -6,6 +6,7 @@
     <title>BAB Struktur Tanah dalam Geoteknik</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -139,10 +140,35 @@
             display: inline-block;
             text-align: left;
         }
-         .chat-message.bot p {
+        .chat-message.bot p, .chat-message.bot div {
             background-color: #eef2f7;
             color: #003f5c;
             display: inline-block;
+        }
+        /* Custom Prose Styles for Rich Text */
+        .prose h4 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .prose p {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .prose ul {
+            list-style-type: disc;
+            margin-left: 1.5rem; /* ml-6 */
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .prose li {
+            margin-bottom: 0.25rem; /* mb-1 */
+        }
+        .prose strong {
+            font-weight: 600; /* font-semibold */
+        }
+        .prose em {
+            font-style: italic;
         }
     </style>
 </head>
@@ -544,7 +570,7 @@
                         <div class="loader"></div>
                         <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang menganalisis...</p>
                     </div>
-                    <div id="gemini-output" class="text-lg">
+                    <div id="gemini-output" class="prose text-lg max-w-none">
                         <h4 class="font-bold text-xl text-center text-[#003f5c] mb-4">Hasil Analisis Anda</h4>
                         <p>Hasil analisis dari Gemini akan muncul di sini. Silakan sesuaikan parameter di atas dan klik tombol untuk memulai.</p>
                     </div>
@@ -584,7 +610,7 @@
                         <div class="loader"></div>
                         <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang menyusun studi kasus...</p>
                     </div>
-                    <div id="case-study-output" class="text-lg">
+                    <div id="case-study-output" class="prose text-lg max-w-none">
                         <p>Studi kasus Anda akan muncul di sini.</p>
                     </div>
                 </div>
@@ -617,7 +643,7 @@
                         <div class="loader"></div>
                         <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang menginterpretasi hasil...</p>
                     </div>
-                    <div id="test-interpreter-output" class="text-lg">
+                    <div id="test-interpreter-output" class="prose text-lg max-w-none">
                         <p>Interpretasi hasil uji Anda akan muncul di sini.</p>
                     </div>
                 </div>
@@ -645,7 +671,7 @@
                              <div class="loader"></div>
                              <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang menghitung...</p>
                         </div>
-                        <div id="compaction-explanation">
+                        <div id="compaction-explanation" class="prose max-w-none">
                             <p>Penjelasan mengenai karakteristik pemadatan akan muncul di sini.</p>
                         </div>
                     </div>
@@ -773,7 +799,7 @@
                 <div class="loader"></div>
                 <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang menjelaskan...</p>
             </div>
-            <div id="modal-body"></div>
+            <div id="modal-body" class="prose max-w-none"></div>
         </div>
     </div>
     
@@ -1205,9 +1231,15 @@
             }
 
             const markdownToHtml = (text) => {
-                let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
-                html = html.replace(/([A-Za-zγ])_(\w+)/g, '$1<sub>$2</sub>').replace(/\n/g, '<br>');
-                return `<p>${html}</p>`;
+                const converter = new showdown.Converter({
+                    ghCompatibleHeaderId: true,
+                    simpleLineBreaks: true,
+                    ghMentions: true
+                });
+                let html = converter.makeHtml(text);
+                // Pertahankan logika subscript kustom yang sudah ada
+                html = html.replace(/([A-Za-zγ])_(\w+)/g, '$1<sub>$2</sub>');
+                return html;
             }
 
             const callGemini = async (payload, outputElement, loaderElement) => {
@@ -1215,7 +1247,7 @@
                 if (outputElement) outputElement.style.display = 'none';
 
                 const apiKey = document.getElementById('apiKeyInput').value || "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
                 try {
                     const response = await fetch(apiUrl, {
                         method: 'POST',
@@ -1427,7 +1459,7 @@
                         <div class="loader mx-auto"></div>
                         <p class="mt-4 text-[#58508d] font-semibold">Gemini sedang mengevaluasi jawaban Anda...</p>
                     </div>
-                    <div id="evaluation-output"></div>
+                    <div id="evaluation-output" class="prose max-w-none"></div>
                     <button onclick="restartQuiz()" class="w-full mt-6 bg-[#ff6361] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#e65a58] transition duration-300">Ulangi Kuis</button>
                 `;
                 const topicsToReview = quizState.wrongAnswers.map(wa => wa.topic).filter((v, i, a) => a.indexOf(v) === i);
@@ -1471,9 +1503,9 @@
                 chatLoading.style.display = 'none';
 
                 if(response){
-                    chatHistory.innerHTML += `<div class="chat-message bot mb-4"><p class="rounded-lg p-3">${markdownToHtml(response)}</p></div>`;
+                    chatHistory.innerHTML += `<div class="chat-message bot mb-4"><div class="prose max-w-none rounded-lg p-3">${markdownToHtml(response)}</div></div>`;
                 } else {
-                     chatHistory.innerHTML += `<div class="chat-message bot mb-4"><p class="rounded-lg p-3 text-red-500">Maaf, terjadi kesalahan. Tidak dapat menghubungi ahli saat ini.</p></div>`;
+                     chatHistory.innerHTML += `<div class="chat-message bot mb-4"><div class="prose max-w-none rounded-lg p-3 text-red-500">Maaf, terjadi kesalahan. Tidak dapat menghubungi ahli saat ini.</div></div>`;
                 }
                  chatHistory.scrollTop = chatHistory.scrollHeight;
             }
